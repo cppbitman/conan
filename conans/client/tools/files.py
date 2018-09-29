@@ -242,6 +242,21 @@ def replace_prefix_in_pc_file(pc_file, new_prefix):
     save(pc_file, "\n".join(lines))
 
 
+def replace_prefix_in_pc_file_full(pc_file, new_prefix):
+    content = load(pc_file)
+    lines = []
+    prefix = ''
+    for line in content.splitlines():
+        if line.startswith("prefix="):
+            lines.append('prefix=%s' % new_prefix)
+            prefix = line[len('prefix='):]
+        elif line.count(prefix)>0:
+            lines.append(line.replace(prefix, '${exec_prefix}'))
+        else:
+            lines.append(line)
+    save(pc_file, "\n".join(lines))
+ 
+
 def _path_equals(path1, path2):
     path1 = os.path.normpath(path1)
     path2 = os.path.normpath(path2)
